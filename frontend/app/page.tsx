@@ -137,11 +137,13 @@ export default function Home() {
         body: JSON.stringify({ message: text }),
       });
 
-      if (!res.ok) throw new Error("Request failed");
       const data = await res.json();
+      if (!res.ok || data?.error) {
+        throw new Error(data?.error || `Request failed (${res.status})`);
+      }
       setResult(data);
-    } catch (e) {
-      setError("Something went wrong. Please try again.");
+    } catch (e: any) {
+      setError(e?.message || "Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

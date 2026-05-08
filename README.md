@@ -112,10 +112,13 @@ START_FRONTEND_WITH_BOT=true
 FRONTEND_HOST=0.0.0.0
 # Leave FRONTEND_PORT empty on Railway so the app uses Railway's PORT automatically.
 FRONTEND_MODE=auto
-BOT_API_PORT=8080
 ```
 
 If the frontend is deployed as a separate Railway service, set `WEB_APP_URL` to that frontend service URL. If the bot starts the frontend in the same service, use that service's public Railway URL.
+
+Do not set `BOT_API_PORT` to Railway's public `PORT` when the bot starts the frontend in the same service. The bot will move its internal API to a free localhost port automatically.
+
+If the frontend is deployed as a separate Railway service, set `BOT_API_URL` on that frontend service to the bot service URL, for example Railway's private service URL plus the bot API port.
 
 The included `nixpacks.toml` installs both Python and frontend dependencies, builds Next.js, and starts the bot with `python -m bot.main`. In Railway/production, the bot starts the built frontend with `next start`; locally it keeps using `next dev`.
 

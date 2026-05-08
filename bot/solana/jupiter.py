@@ -41,7 +41,7 @@ class JupiterClient:
         if self._session and not self._session.closed:
             await self._session.close()
 
-    async def get_quote(self, intent: SwapIntent) -> QuoteResult | None:
+    async def get_quote(self, intent: SwapIntent) -> tuple[QuoteResult | None, dict | None]:
         """
         Получает лучшую котировку для swap от Jupiter.
 
@@ -53,10 +53,10 @@ class JupiterClient:
 
         if not input_mint:
             logger.warning(f"Unknown input token mint: {intent.input_token}")
-            return None
+            return None, None
         if not output_mint:
             logger.warning(f"Unknown output token mint: {intent.output_token}")
-            return None
+            return None, None
 
         amount_raw = to_lamports(intent.amount, intent.input_token)
 
@@ -79,7 +79,7 @@ class JupiterClient:
                 if resp.status != 200:
                     body = await resp.text()
                     logger.error(f"Jupiter API error {resp.status}: {body}")
-                    return None
+                    return None, None
 
                 data = await resp.json()
                 return self._parse_quote(data, intent), data

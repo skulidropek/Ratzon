@@ -38,13 +38,10 @@ class Config:
         if not token:
             raise ValueError("BOT_TOKEN environment variable is required")
 
+        start_frontend_with_bot = _env_bool("START_FRONTEND_WITH_BOT", True)
         api_port = int(os.getenv("BOT_API_PORT", os.getenv("API_PORT", "8080")))
         frontend_port = int(os.getenv("FRONTEND_PORT") or os.getenv("PORT") or "4000")
-        if (
-            frontend_port == api_port
-            and "BOT_API_PORT" not in os.environ
-            and "API_PORT" not in os.environ
-        ):
+        if start_frontend_with_bot and frontend_port == api_port:
             api_port = 8081 if frontend_port == 8080 else 8080
 
         return cls(
@@ -58,7 +55,7 @@ class Config:
                 "DEMO_WALLET",
                 "Demo1111111111111111111111111111111111111111"
             ),
-            start_frontend_with_bot=_env_bool("START_FRONTEND_WITH_BOT", True),
+            start_frontend_with_bot=start_frontend_with_bot,
             frontend_host=os.getenv("FRONTEND_HOST", "0.0.0.0"),
             frontend_port=frontend_port,
             frontend_dir=os.getenv("FRONTEND_DIR", "frontend"),

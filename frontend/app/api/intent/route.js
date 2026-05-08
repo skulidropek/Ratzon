@@ -4,7 +4,7 @@
  * Фронтенд → Next.js API → Python бот → Jupiter → Response
  */
 
-const BOT_API_URL = process.env.BOT_API_URL || "http://localhost:8080";
+import { getBotApiUrl, proxyError, readJsonResponse } from "../_lib/botApi";
 
 export async function POST(request) {
   try {
@@ -15,25 +15,28 @@ export async function POST(request) {
       return Response.json({ error: "message required" }, { status: 400 });
     }
 
+    const botApiUrl = getBotApiUrl();
+
     // Прокси к Python боту
-    const res = await fetch(`${BOT_API_URL}/intent`, {
+    const res = await fetch(`${botApiUrl}/intent`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message }),
+      cache: "no-store",
     });
 
+    const data = await readJsonResponse(res);
+
     if (!res.ok) {
-      throw new Error(`Bot API error: ${res.status}`);
+      return proxyError(data?.error || `Bot API error (${res.status})`, res.status);
     }
 
-    const data = await res.json();
     return Response.json(data);
 
   } catch (error) {
     console.error("Intent API error:", error);
-    return Response.json(
-      { error: "Service unavailable" },
-      { status: 503 }
+    return proxyError(
+      error?.message || "Bot API is unavailable. Check BOT_API_URL and bot service logs.",
     );
   }
 }

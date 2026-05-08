@@ -97,8 +97,8 @@ class IntentDispatcher:
             confidence=1.0, amount=intent.amount or 1.0,
             input_token=intent.input_token, output_token=intent.output_token,
         )
-        quote = await jupiter_client.get_quote(swap_intent)
-        if not quote:
+        quote, _ = await jupiter_client.get_quote(swap_intent)
+        if quote is None:
             return DispatchResult(
                 text=formatter.format_no_route(swap_intent), intent=intent,
             )

@@ -10,6 +10,7 @@ import shlex
 import shutil
 import sys
 from pathlib import Path
+from urllib.parse import urlparse
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -61,7 +62,8 @@ async def start_frontend_process(cfg, logger: logging.Logger):
         return None
 
     env = os.environ.copy()
-    env.setdefault("BOT_API_URL", f"http://localhost:{cfg.api_port}")
+    if "BOT_API_URL" not in env or _is_loopback_url(env["BOT_API_URL"]):
+        env["BOT_API_URL"] = f"http://localhost:{cfg.api_port}"
 
     logger.info("Starting frontend: %s", " ".join(command))
     try:
@@ -131,6 +133,14 @@ def _resolve_frontend_mode(cfg, frontend_dir: Path) -> str:
     if has_production_build and is_production_runtime:
         return "start"
     return "dev"
+
+
+def _is_loopback_url(value: str) -> bool:
+    try:
+        hostname = urlparse(value).hostname
+    except ValueError:
+        return False
+    return hostname in {"localhost", "127.0.0.1", "0.0.0.0"}
 
 
 async def _is_port_open(host: str, port: int) -> bool:

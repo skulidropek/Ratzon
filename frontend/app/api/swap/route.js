@@ -1,4 +1,4 @@
-const BOT_API_URL = process.env.BOT_API_URL || "http://localhost:8080";
+import { getBotApiUrl, proxyError, readJsonResponse } from "../_lib/botApi";
 
 export async function POST(request) {
   try {
@@ -9,21 +9,25 @@ export async function POST(request) {
       return Response.json({ error: "message and wallet are required" }, { status: 400 });
     }
 
-    const res = await fetch(`${BOT_API_URL}/swap`, {
+    const botApiUrl = getBotApiUrl();
+    const res = await fetch(`${botApiUrl}/swap`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ message, wallet }),
+      cache: "no-store",
     });
 
+    const data = await readJsonResponse(res);
+
     if (!res.ok) {
-      const data = await res.json();
-      return Response.json({ error: data?.error || "Failed to prepare swap" }, { status: res.status });
+      return proxyError(data?.error || "Failed to prepare swap", res.status);
     }
 
-    const data = await res.json();
     return Response.json(data);
   } catch (error) {
     console.error("Swap API error:", error);
-    return Response.json({ error: "Service unavailable" }, { status: 503 });
+    return proxyError(
+      error?.message || "Bot API is unavailable. Check BOT_API_URL and bot service logs.",
+    );
   }
 }
