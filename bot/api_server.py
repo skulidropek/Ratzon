@@ -17,7 +17,11 @@ from bot.intents.models import IntentType
 from bot.intents.parser import intent_parser
 from bot.services.dispatcher import intent_dispatcher
 from bot.solana.jupiter import jupiter_client
-from bot.solana.phantom import build_phantom_deeplink
+from bot.solana.phantom import (
+    build_phantom_app_deeplink,
+    build_phantom_browse_deeplink,
+    build_phantom_deeplink,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -127,7 +131,10 @@ async def handle_swap(request: web.Request) -> web.Response:
             )
 
         return web.json_response({
+            "transaction": tx_b64,
             "phantom_url": build_phantom_deeplink(tx_b64),
+            "phantom_app_url": build_phantom_app_deeplink(tx_b64),
+            "phantom_browse_url": build_phantom_browse_deeplink(),
         })
 
     except json.JSONDecodeError:

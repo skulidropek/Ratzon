@@ -6,7 +6,6 @@ Phantom Wallet deeplink генератор.
 одним нажатием — без кастодиального хранения ключей.
 """
 
-import base64
 import urllib.parse
 
 
@@ -23,16 +22,44 @@ def build_phantom_deeplink(
         redirect_url: куда вернуть пользователя после подписи
 
     Returns:
-        phantom://... deeplink
+        https://phantom.app/... universal link
     """
-    params = urllib.parse.urlencode({
+    params = _build_phantom_params(transaction_b64, redirect_url)
+
+    # Universal link. Good for Telegram URL buttons and most mobile browsers,
+    # but on desktop it opens Phantom's website, not the browser extension.
+    return f"https://phantom.app/ul/v1/signAndSendTransaction?{params}"
+
+
+def build_phantom_app_deeplink(
+    transaction_b64: str,
+    redirect_url: str = "https://ratzon.vercel.app",
+) -> str:
+    """
+    Строит custom-scheme deeplink для прямого открытия Phantom mobile app.
+
+    Используется фронтендом на mobile как same-tab navigation. Для Telegram
+    inline-кнопок оставляем https universal link.
+    """
+    params = _build_phantom_params(transaction_b64, redirect_url)
+    return f"phantom://v1/signAndSendTransaction?{params}"
+
+
+def build_phantom_browse_deeplink(
+    url: str = "https://ratzon.vercel.app",
+    ref: str = "https://ratzon.vercel.app",
+) -> str:
+    """Строит ссылку для открытия сайта внутри Phantom mobile browser."""
+    encoded_url = urllib.parse.quote(url, safe="")
+    encoded_ref = urllib.parse.quote(ref, safe="")
+    return f"https://phantom.app/ul/browse/{encoded_url}?ref={encoded_ref}"
+
+
+def _build_phantom_params(transaction_b64: str, redirect_url: str) -> str:
+    return urllib.parse.urlencode({
         "transaction": transaction_b64,
         "redirect_link": redirect_url,
     })
-
-    # Для inline-кнопки Telegram нужно использовать https universal link.
-    # Phantom app scheme (`phantom://`) не поддерживается в URL-кнопках Telegram.
-    return f"https://phantom.app/ul/v1/signAndSendTransaction?{params}"
 
 
 def build_solflare_deeplink(transaction_b64: str) -> str:

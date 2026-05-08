@@ -22,6 +22,7 @@ export default function ResultCard({
   confirmLoading,
   confirmError,
   phantomUrl,
+  txSignature,
   onReset,
 }) {
   if (!result) return null;
@@ -177,7 +178,7 @@ export default function ResultCard({
           <div className="mt-5 flex flex-col gap-3">
             <button
               onClick={onConfirm}
-              disabled={!wallet || confirmLoading}
+              disabled={confirmLoading}
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#ff353b] px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-[#ff4f55] disabled:cursor-not-allowed disabled:bg-[#273034] disabled:text-[#68777c]"
             >
               {confirmLoading ? (
@@ -201,7 +202,19 @@ export default function ResultCard({
             </button>
           </div>
 
-          {phantomUrl && (
+          {txSignature && (
+            <a
+              href={`https://solscan.io/tx/${txSignature}`}
+              target="_blank"
+              rel="noreferrer"
+              className="mt-3 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-xl border border-[#1f6d4b] bg-[#0d2a1d] px-5 py-3 text-sm font-semibold text-[#70e1a6] transition-colors hover:bg-[#113423]"
+            >
+              <ExternalLink className="h-4 w-4" />
+              View submitted transaction
+            </a>
+          )}
+
+          {phantomUrl && !txSignature && (
             <a
               href={phantomUrl}
               target="_blank"

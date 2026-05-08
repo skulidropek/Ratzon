@@ -48,6 +48,55 @@ const CAPABILITIES = [
   },
 ];
 
+function getPhantomProvider() {
+  if (typeof window === "undefined") return null;
+
+  const browserWindow = window as typeof window & {
+    phantom?: { solana?: any };
+    solana?: any;
+  };
+  const provider = browserWindow.phantom?.solana || browserWindow.solana;
+  return provider?.isPhantom ? provider : null;
+}
+
+function isMobileDevice() {
+  if (typeof navigator === "undefined") return false;
+
+  return (
+    /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+    (navigator.maxTouchPoints > 1 && /Macintosh/i.test(navigator.userAgent))
+  );
+}
+
+function decodeBase64Transaction(transaction: string) {
+  const binary = window.atob(transaction);
+  const bytes = new Uint8Array(binary.length);
+  for (let index = 0; index < binary.length; index += 1) {
+    bytes[index] = binary.charCodeAt(index);
+  }
+  return bytes;
+}
+
+function buildPhantomBrowseUrl() {
+  const targetUrl = window.location.href;
+  const refUrl = window.location.origin;
+  return `https://phantom.app/ul/browse/${encodeURIComponent(targetUrl)}?ref=${encodeURIComponent(refUrl)}`;
+}
+
+async function connectInjectedPhantom(provider: any) {
+  const connection = await provider.connect();
+  return connection?.publicKey?.toString?.() || provider.publicKey?.toString?.();
+}
+
+async function signWithInjectedPhantom(provider: any, transaction: string) {
+  const { VersionedTransaction } = await import("@solana/web3.js");
+  const versionedTransaction = VersionedTransaction.deserialize(
+    decodeBase64Transaction(transaction),
+  );
+  const result = await provider.signAndSendTransaction(versionedTransaction);
+  return result?.signature || result?.hash || (typeof result === "string" ? result : null);
+}
+
 export default function Home() {
   const [lastQuery, setLastQuery] = useState("");
   const [result, setResult] = useState<any | null>(null);
@@ -56,6 +105,7 @@ export default function Home() {
   const [confirmLoading, setConfirmLoading] = useState(false);
   const [confirmError, setConfirmError] = useState<string | null>(null);
   const [phantomUrl, setPhantomUrl] = useState<string | null>(null);
+  const [txSignature, setTxSignature] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement | null>(null);
 
@@ -78,6 +128,7 @@ export default function Home() {
     setResult(null);
     setConfirmError(null);
     setPhantomUrl(null);
+    setTxSignature(null);
 
     try {
       const res = await fetch("/api/intent", {
@@ -97,17 +148,37 @@ export default function Home() {
   }
 
   async function handleConfirm() {
-    if (!lastQuery || !wallet) return;
+    if (!lastQuery) return;
 
     setConfirmError(null);
     setConfirmLoading(true);
     setPhantomUrl(null);
+    setTxSignature(null);
 
     try {
+      const provider = getPhantomProvider();
+
+      if (!provider && isMobileDevice()) {
+        window.location.assign(buildPhantomBrowseUrl());
+        return;
+      }
+
+      let walletForSwap = wallet.trim();
+      if (provider) {
+        walletForSwap = await connectInjectedPhantom(provider);
+        if (walletForSwap) setWallet(walletForSwap);
+      }
+
+      if (!walletForSwap) {
+        throw new Error(
+          "Connect Phantom or enter a Solana wallet address before preparing the transaction.",
+        );
+      }
+
       const res = await fetch("/api/swap", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: lastQuery, wallet }),
+        body: JSON.stringify({ message: lastQuery, wallet: walletForSwap }),
       });
 
       if (!res.ok) {
@@ -121,7 +192,24 @@ export default function Home() {
       }
 
       setPhantomUrl(data.phantom_url);
-      window.open(data.phantom_url, "_blank");
+
+      if (provider && data.transaction) {
+        const signature = await signWithInjectedPhantom(provider, data.transaction);
+        if (signature) {
+          setTxSignature(signature);
+          return;
+        }
+        throw new Error("Phantom did not return a transaction signature.");
+      }
+
+      if (isMobileDevice()) {
+        window.location.assign(data.phantom_browse_url || buildPhantomBrowseUrl());
+        return;
+      }
+
+      throw new Error(
+        "Phantom extension was not detected in this browser tab. Enable Phantom in Brave, refresh, and try again.",
+      );
     } catch (e: any) {
       setConfirmError(e?.message || "Could not prepare Phantom transaction.");
     } finally {
@@ -309,10 +397,12 @@ export default function Home() {
               confirmLoading={confirmLoading}
               confirmError={confirmError}
               phantomUrl={phantomUrl}
+              txSignature={txSignature}
               onReset={() => {
                 setResult(null);
                 setWallet("");
                 setPhantomUrl(null);
+                setTxSignature(null);
                 setConfirmError(null);
               }}
             />
