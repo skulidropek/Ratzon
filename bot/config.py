@@ -22,6 +22,13 @@ class Config:
     # Для демо-режима (мок кошелёк)
     demo_wallet: str = "Demo1111111111111111111111111111111111111111"
 
+    # Локальный web frontend рядом с ботом
+    start_frontend_with_bot: bool = True
+    frontend_host: str = "0.0.0.0"
+    frontend_port: int = 4000
+    frontend_dir: str = "frontend"
+    frontend_command: str = ""
+
     @classmethod
     def from_env(cls) -> "Config":
         token = os.getenv("BOT_TOKEN")
@@ -39,6 +46,11 @@ class Config:
                 "DEMO_WALLET",
                 "Demo1111111111111111111111111111111111111111"
             ),
+            start_frontend_with_bot=_env_bool("START_FRONTEND_WITH_BOT", True),
+            frontend_host=os.getenv("FRONTEND_HOST", "0.0.0.0"),
+            frontend_port=int(os.getenv("FRONTEND_PORT", "4000")),
+            frontend_dir=os.getenv("FRONTEND_DIR", "frontend"),
+            frontend_command=os.getenv("FRONTEND_COMMAND", ""),
         )
 
 
@@ -51,3 +63,10 @@ def get_config() -> Config:
     if config is None:
         config = Config.from_env()
     return config
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() not in {"0", "false", "no", "off"}

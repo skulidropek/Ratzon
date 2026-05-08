@@ -82,11 +82,12 @@ cp .env.example .env
 # Add your BOT_TOKEN to .env
 
 pip install -r requirements.txt
-python main.py
+python -m bot.main
 # Bot + API server on port 8080
+# Frontend starts automatically on http://localhost:4000
 ```
 
-### 4. Start frontend (optional)
+### 4. Start frontend manually (optional)
 
 ```bash
 cd frontend
@@ -94,6 +95,8 @@ npm install
 npm run dev
 # Runs on http://localhost:4000
 ```
+
+Set `START_FRONTEND_WITH_BOT=false` if you want to run the frontend as a separate process.
 
 ### Or: Docker Compose (все сервисы одной командой)
 
