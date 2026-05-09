@@ -329,20 +329,66 @@
     }
 
     .mini {
+      position: relative;
+      display: grid;
+      place-items: center;
       min-height: 88px;
-      padding: 13px;
+      padding: 0;
       border: 1px solid var(--white-line);
       background: #0f0f11;
-      font-size: 15px;
-      line-height: 1.18;
-      color: var(--muted);
     }
 
-    .mini strong {
-      display: block;
-      color: var(--text);
-      font-size: 18px;
-      margin-bottom: 6px;
+    .mini::before {
+      content: "";
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.18);
+      background: radial-gradient(circle, rgba(214, 56, 46, 0.9), rgba(214, 56, 46, 0.24));
+      box-shadow: 0 0 22px rgba(214, 56, 46, 0.28);
+    }
+
+    .mini::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 17px;
+      width: 46px;
+      height: 6px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.14);
+    }
+
+    .mini:nth-child(2)::before {
+      background: radial-gradient(circle, rgba(73, 209, 122, 0.9), rgba(73, 209, 122, 0.24));
+      box-shadow: 0 0 22px rgba(73, 209, 122, 0.24);
+    }
+
+    .mini:nth-child(3)::before {
+      background: radial-gradient(circle, rgba(85, 216, 209, 0.9), rgba(85, 216, 209, 0.24));
+      box-shadow: 0 0 22px rgba(85, 216, 209, 0.24);
+    }
+
+    .mini:nth-child(4)::before {
+      background: radial-gradient(circle, rgba(142, 89, 255, 0.9), rgba(142, 89, 255, 0.24));
+      box-shadow: 0 0 22px rgba(142, 89, 255, 0.24);
+    }
+
+    .solution-slide .comparison {
+      flex: none;
+      height: 382px;
+    }
+
+    .solution-slide .chat {
+      gap: 12px;
+    }
+
+    .solution-slide .bottom-line {
+      bottom: 100px;
+      font-size: 24px;
+      line-height: 1.08;
+      white-space: nowrap;
     }
 
     .flow {
@@ -669,7 +715,7 @@
     </div>
   </section>
 
-  <section class="slide">
+  <section class="slide solution-slide">
     <div class="content">
       <div class="kicker">Solution</div>
       <h2>One sentence. Full execution.</h2>
@@ -690,10 +736,10 @@
             <div class="bubble user">Swap 50 USDC to SOL</div>
             <div class="bubble bot">Intent recognized<br /><span class="muted">USDC → SOL · best route via Jupiter</span></div>
             <div class="mini-grid">
-              <div class="mini"><strong>Quote</strong>Real-time route</div>
-              <div class="mini"><strong>Risk</strong>Low slippage</div>
-              <div class="mini"><strong>Fees</strong>Solana cost</div>
-              <div class="mini"><strong>Confirm</strong>User approves</div>
+              <div class="mini" aria-label="Quote"></div>
+              <div class="mini" aria-label="Risk"></div>
+              <div class="mini" aria-label="Fees"></div>
+              <div class="mini" aria-label="Confirm"></div>
             </div>
           </div>
         </div>
