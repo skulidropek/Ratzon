@@ -1,0 +1,854 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>RATZON Pitch Deck</title>
+  <style>
+    :root {
+      --bg: #030303;
+      --panel: #0d0d0f;
+      --panel-2: #151517;
+      --text: #f7f2ee;
+      --muted: #b8b0aa;
+      --dim: #76706d;
+      --red: #d6382e;
+      --red-2: #8b1613;
+      --green: #49d17a;
+      --cyan: #55d8d1;
+      --purple: #8e59ff;
+      --line: rgba(214, 56, 46, 0.58);
+      --white-line: rgba(255, 255, 255, 0.13);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+      background: #111;
+      color: var(--text);
+      font-family: Inter, Aptos, "Segoe UI", Arial, sans-serif;
+      letter-spacing: 0;
+    }
+
+    body {
+      display: grid;
+      gap: 28px;
+      justify-items: center;
+      padding: 28px;
+    }
+
+    .slide {
+      position: relative;
+      width: min(1280px, 100vw - 56px);
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 82% 16%, rgba(214, 56, 46, 0.18), transparent 26%),
+        linear-gradient(135deg, rgba(255, 255, 255, 0.04), transparent 28%),
+        var(--bg);
+      border: 1px solid #202020;
+      box-shadow: 0 18px 60px rgba(0, 0, 0, 0.42);
+      page-break-after: always;
+    }
+
+    .slide::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 72px 72px;
+      opacity: 0.22;
+      pointer-events: none;
+    }
+
+    .slide::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 86px;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--red), transparent);
+      opacity: 0.92;
+    }
+
+    .content {
+      position: relative;
+      z-index: 1;
+      height: 100%;
+      padding: 70px 88px 92px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .kicker {
+      color: var(--red);
+      font-size: 22px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 92px;
+      line-height: 0.95;
+      font-weight: 900;
+    }
+
+    h2 {
+      max-width: 920px;
+      font-size: 58px;
+      line-height: 1.02;
+      font-weight: 900;
+    }
+
+    h3 {
+      font-size: 32px;
+      line-height: 1.15;
+      font-weight: 850;
+    }
+
+    .lead {
+      max-width: 860px;
+      color: var(--muted);
+      font-size: 30px;
+      line-height: 1.28;
+      font-weight: 650;
+    }
+
+    .muted {
+      color: var(--muted);
+    }
+
+    .dim {
+      color: var(--dim);
+    }
+
+    .red {
+      color: var(--red);
+    }
+
+    .logo {
+      width: 190px;
+      height: 190px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 34px rgba(214, 56, 46, 0.36));
+    }
+
+    .cover {
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      gap: 22px;
+      padding-bottom: 118px;
+    }
+
+    .cover h1 {
+      font-size: 82px;
+      letter-spacing: 0.04em;
+    }
+
+    .cover .lead {
+      max-width: 760px;
+      font-size: 31px;
+    }
+
+    .footer {
+      position: absolute;
+      z-index: 2;
+      left: 88px;
+      right: 88px;
+      bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--dim);
+      font-size: 18px;
+      font-weight: 650;
+    }
+
+    .footer strong {
+      color: var(--text);
+    }
+
+    .split {
+      display: grid;
+      grid-template-columns: 1.06fr 0.94fr;
+      gap: 54px;
+      align-items: center;
+      flex: 1;
+    }
+
+    .stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .steps {
+      display: grid;
+      gap: 12px;
+      margin-top: 28px;
+      font-size: 25px;
+      line-height: 1.18;
+      font-weight: 800;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      align-items: center;
+      color: var(--text);
+    }
+
+    .step span:first-child {
+      color: var(--red);
+      font-weight: 900;
+    }
+
+    .metric-panel {
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+      padding: 44px 36px;
+      border: 2px solid var(--line);
+      background: linear-gradient(180deg, rgba(214, 56, 46, 0.1), rgba(255, 255, 255, 0.02));
+    }
+
+    .metric-panel .big {
+      font-size: 86px;
+      color: var(--red);
+      font-weight: 950;
+      line-height: 0.95;
+    }
+
+    .metric-panel p {
+      max-width: 360px;
+      text-align: center;
+      color: var(--text);
+      font-size: 28px;
+      line-height: 1.16;
+      font-weight: 850;
+    }
+
+    .bottom-line {
+      position: absolute;
+      z-index: 2;
+      left: 88px;
+      right: 88px;
+      bottom: 108px;
+      text-align: center;
+      font-size: 32px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+
+    .comparison {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 44px;
+      align-items: stretch;
+      margin-top: 38px;
+      flex: 1;
+    }
+
+    .before,
+    .demo-card {
+      background: rgba(255, 255, 255, 0.035);
+      border: 1px solid var(--white-line);
+      padding: 30px;
+    }
+
+    .before h3,
+    .demo-card h3 {
+      color: var(--red);
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .check-list {
+      display: grid;
+      gap: 12px;
+      color: var(--text);
+      font-size: 25px;
+      line-height: 1.12;
+      font-weight: 800;
+    }
+
+    .check-list div::before {
+      content: "✓ ";
+      color: var(--text);
+      font-weight: 700;
+    }
+
+    .chat {
+      display: grid;
+      gap: 16px;
+      font-weight: 750;
+    }
+
+    .bubble {
+      width: fit-content;
+      max-width: 100%;
+      padding: 15px 18px;
+      border-radius: 8px;
+      font-size: 24px;
+      line-height: 1.18;
+    }
+
+    .user {
+      justify-self: end;
+      color: #fff;
+      background: linear-gradient(135deg, var(--red), var(--red-2));
+    }
+
+    .bot {
+      justify-self: start;
+      color: var(--text);
+      background: #1a1a1d;
+      border: 1px solid var(--white-line);
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .mini {
+      min-height: 88px;
+      padding: 13px;
+      border: 1px solid var(--white-line);
+      background: #0f0f11;
+      font-size: 15px;
+      line-height: 1.18;
+      color: var(--muted);
+    }
+
+    .mini strong {
+      display: block;
+      color: var(--text);
+      font-size: 18px;
+      margin-bottom: 6px;
+    }
+
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 13px;
+      align-items: stretch;
+      margin-top: 52px;
+    }
+
+    .flow-card {
+      position: relative;
+      min-height: 166px;
+      padding: 22px 16px;
+      border: 1px solid var(--white-line);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.015));
+    }
+
+    .flow-card:not(:last-child)::after {
+      content: "→";
+      position: absolute;
+      top: 54px;
+      right: -20px;
+      color: var(--red);
+      font-size: 29px;
+      font-weight: 900;
+    }
+
+    .flow-card .num {
+      color: var(--red);
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .flow-card h3 {
+      margin-top: 24px;
+      font-size: 27px;
+    }
+
+    .flow-card p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 17px;
+      line-height: 1.22;
+      font-weight: 650;
+    }
+
+    .trust-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 44px;
+    }
+
+    .trust-strip div {
+      border-left: 3px solid var(--red);
+      padding-left: 16px;
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1.18;
+      font-weight: 750;
+    }
+
+    .layer-diagram {
+      display: grid;
+      gap: 22px;
+      margin-top: 34px;
+      max-width: 820px;
+      align-self: center;
+      width: 100%;
+    }
+
+    .layer-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+
+    .layer-pill,
+    .layer-core,
+    .protocol-pill {
+      display: grid;
+      place-items: center;
+      min-height: 74px;
+      border: 1px solid var(--white-line);
+      background: #101012;
+      color: var(--text);
+      font-size: 21px;
+      line-height: 1.08;
+      text-align: center;
+      font-weight: 850;
+    }
+
+    .layer-core {
+      min-height: 126px;
+      border: 3px solid var(--red);
+      background: linear-gradient(135deg, rgba(214, 56, 46, 0.22), rgba(255, 255, 255, 0.03));
+      font-size: 32px;
+      letter-spacing: 0.02em;
+    }
+
+    .protocols {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+
+    .protocol-pill {
+      min-height: 62px;
+      color: var(--muted);
+      font-size: 19px;
+    }
+
+    .arrow-label {
+      text-align: center;
+      color: var(--red);
+      font-size: 34px;
+      font-weight: 900;
+      line-height: 0.85;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      margin-top: 50px;
+    }
+
+    .metric {
+      display: grid;
+      gap: 14px;
+      border-top: 3px solid var(--red);
+      padding-top: 24px;
+    }
+
+    .metric strong {
+      color: var(--red);
+      font-size: 55px;
+      line-height: 0.95;
+      font-weight: 950;
+    }
+
+    .metric span {
+      max-width: 250px;
+      color: var(--text);
+      font-size: 25px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .wedge {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 28px;
+      margin-top: 44px;
+    }
+
+    .wedge-card {
+      min-height: 124px;
+      padding: 24px;
+      border: 1px solid var(--white-line);
+      background: rgba(255, 255, 255, 0.035);
+    }
+
+    .wedge-card h3 {
+      margin-bottom: 10px;
+      color: var(--red);
+    }
+
+    .wedge-card p {
+      color: var(--muted);
+      font-size: 23px;
+      line-height: 1.22;
+      font-weight: 700;
+    }
+
+    .traction-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 50px;
+      margin-top: 34px;
+      flex: 1;
+      align-items: start;
+    }
+
+    .status-list {
+      display: grid;
+      gap: 14px;
+      font-size: 26px;
+      line-height: 1.14;
+      font-weight: 850;
+    }
+
+    .status {
+      display: grid;
+      grid-template-columns: 32px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--white-line);
+    }
+
+    .status .ok {
+      color: var(--green);
+    }
+
+    .status .soon {
+      color: var(--red);
+    }
+
+    .status small {
+      color: var(--red);
+      font-size: 17px;
+      font-weight: 950;
+      text-transform: uppercase;
+    }
+
+    .next-box {
+      display: grid;
+      gap: 18px;
+      padding: 30px;
+      border: 2px solid var(--line);
+      background: linear-gradient(180deg, rgba(214, 56, 46, 0.12), rgba(255, 255, 255, 0.02));
+    }
+
+    .next-box h3 {
+      color: var(--red);
+      text-transform: uppercase;
+    }
+
+    .next-box p {
+      color: var(--text);
+      font-size: 31px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .team {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 18px;
+      align-items: center;
+      margin-top: 20px;
+      color: var(--muted);
+      font-size: 22px;
+      line-height: 1.22;
+      font-weight: 700;
+    }
+
+    .team img {
+      width: 78px;
+      height: 78px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 18px rgba(214, 56, 46, 0.3));
+    }
+
+    .team strong {
+      color: var(--text);
+    }
+
+    @media print {
+      @page {
+        size: 16in 9in;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 16in;
+        min-height: 9in;
+        background: #000;
+        padding: 0;
+        display: block;
+      }
+
+      .slide {
+        width: 16in;
+        height: 9in;
+        border: 0;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <section class="slide">
+    <div class="content cover">
+      <img class="logo" src="../frontend/public/Ratzon_logo-removebg-preview.png" alt="Ratzon logo" />
+      <h1>RATZON</h1>
+      <p class="lead">The Intent Execution Layer for Solana</p>
+      <p class="lead"><span class="red">Say what you want.</span><br />Ratzon executes it.</p>
+    </div>
+    <div class="footer">
+      <span>Superteam Georgia · Colosseum Frontier Hackathon · 2026</span>
+      <strong>01</strong>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content">
+      <div class="kicker">Problem</div>
+      <div class="split">
+        <div>
+          <h2>DeFi is powerful. But most users never reach it.</h2>
+          <div class="steps">
+            <div class="step"><span>1</span><span>Open a DEX</span></div>
+            <div class="step"><span>2</span><span>Connect wallet</span></div>
+            <div class="step"><span>3</span><span>Select tokens</span></div>
+            <div class="step"><span>4</span><span>Compare routes</span></div>
+            <div class="step"><span>5</span><span>Set slippage</span></div>
+            <div class="step"><span>6</span><span>Sign and hope</span></div>
+          </div>
+        </div>
+        <div class="metric-panel">
+          <div class="big">6+</div>
+          <p>steps for one simple swap</p>
+        </div>
+      </div>
+      <div class="bottom-line">The barrier is not liquidity. It is complexity.</div>
+    </div>
+    <div class="footer">
+      <span>RATZON · Problem</span>
+      <strong>02</strong>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content">
+      <div class="kicker">Solution</div>
+      <h2>One sentence. Full execution.</h2>
+      <div class="comparison">
+        <div class="before">
+          <h3>Before</h3>
+          <div class="check-list">
+            <div>Choose app</div>
+            <div>Select token</div>
+            <div>Compare route</div>
+            <div>Set slippage</div>
+            <div>Confirm wallet</div>
+          </div>
+        </div>
+        <div class="demo-card">
+          <h3>After</h3>
+          <div class="chat">
+            <div class="bubble user">Swap 50 USDC to SOL</div>
+            <div class="bubble bot">Intent recognized<br /><span class="muted">USDC → SOL · best route via Jupiter</span></div>
+            <div class="mini-grid">
+              <div class="mini"><strong>Quote</strong>Real-time route</div>
+              <div class="mini"><strong>Risk</strong>Low slippage</div>
+              <div class="mini"><strong>Fees</strong>Solana cost</div>
+              <div class="mini"><strong>Confirm</strong>User approves</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-line">Ratzon understands the intent, checks risk, finds the route, and executes.</div>
+    </div>
+    <div class="footer">
+      <span>Telegram is the first interface, not the product.</span>
+      <strong>03</strong>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content">
+      <div class="kicker">Execution</div>
+      <h2>How Ratzon works</h2>
+      <div class="flow">
+        <div class="flow-card">
+          <div class="num">01</div>
+          <h3>Intent</h3>
+          <p>User says the desired outcome.</p>
+        </div>
+        <div class="flow-card">
+          <div class="num">02</div>
+          <h3>Parse</h3>
+          <p>Action, token, amount and constraints.</p>
+        </div>
+        <div class="flow-card">
+          <div class="num">03</div>
+          <h3>Route</h3>
+          <p>Jupiter finds the best path.</p>
+        </div>
+        <div class="flow-card">
+          <div class="num">04</div>
+          <h3>Risk</h3>
+          <p>Slippage, token and route checks.</p>
+        </div>
+        <div class="flow-card">
+          <div class="num">05</div>
+          <h3>Confirm</h3>
+          <p>User approves before execution.</p>
+        </div>
+        <div class="flow-card">
+          <div class="num">06</div>
+          <h3>Execute</h3>
+          <p>Transaction is prepared and signed.</p>
+        </div>
+      </div>
+      <div class="trust-strip">
+        <div>Built first on Jupiter Aggregator</div>
+        <div>Best routes across 30+ Solana DEXs</div>
+        <div>Non-custodial, confirm-before-execute flow</div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Intent → route → risk → confirmation → execution</span>
+      <strong>04</strong>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content">
+      <div class="kicker">Product</div>
+      <h2>A protocol, not a bot.</h2>
+      <p class="lead">Any interface can turn user intent into Solana execution through Ratzon.</p>
+      <div class="layer-diagram">
+        <div class="layer-row">
+          <div class="layer-pill">Telegram</div>
+          <div class="layer-pill">Wallets</div>
+          <div class="layer-pill">dApps</div>
+          <div class="layer-pill">AI Agents</div>
+        </div>
+        <div class="arrow-label">↓</div>
+        <div class="layer-core">RATZON INTENT LAYER<br /><span class="muted">Parse · Route · Risk · Execute</span></div>
+        <div class="arrow-label">↓</div>
+        <div class="protocols">
+          <div class="protocol-pill">Jupiter</div>
+          <div class="protocol-pill">Kamino</div>
+          <div class="protocol-pill">Drift</div>
+          <div class="protocol-pill">Jito</div>
+          <div class="protocol-pill">Marinade</div>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Bot today. Execution layer next.</span>
+      <strong>05</strong>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content">
+      <div class="kicker">Market</div>
+      <h2>The wedge is Solana users who want DeFi without opening DeFi apps.</h2>
+      <div class="metrics">
+        <div class="metric">
+          <strong>$20B+</strong>
+          <span>Jupiter monthly swap volume</span>
+        </div>
+        <div class="metric">
+          <strong>10M+</strong>
+          <span>Solana active wallets</span>
+        </div>
+        <div class="metric">
+          <strong>0.1%</strong>
+          <span>of Jupiter volume = $20M monthly routed flow</span>
+        </div>
+      </div>
+      <div class="wedge">
+        <div class="wedge-card">
+          <h3>First users</h3>
+          <p>Telegram-native Solana traders who want faster execution.</p>
+        </div>
+        <div class="wedge-card">
+          <h3>Expansion</h3>
+          <p>Wallets, apps and agents plug into the same intent layer.</p>
+        </div>
+      </div>
+    </div>
+    <div class="footer">
+      <span>Start with swaps. Expand into every Solana action.</span>
+      <strong>06</strong>
+    </div>
+  </section>
+
+  <section class="slide">
+    <div class="content">
+      <div class="kicker">Traction</div>
+      <h2>Already working. Not a concept.</h2>
+      <div class="traction-grid">
+        <div class="status-list">
+          <div class="status"><span class="ok">✓</span><span>Intent parser</span><small>Live</small></div>
+          <div class="status"><span class="ok">✓</span><span>Jupiter quotes</span><small>Live</small></div>
+          <div class="status"><span class="ok">✓</span><span>Risk engine</span><small>Live</small></div>
+          <div class="status"><span class="ok">✓</span><span>Telegram bot</span><small>Live</small></div>
+          <div class="status"><span class="ok">✓</span><span>Confirm / cancel flow</span><small>Live</small></div>
+          <div class="status"><span class="soon">→</span><span>Real wallet signing</span><small>Next</small></div>
+        </div>
+        <div>
+          <div class="next-box">
+            <h3>Next milestone</h3>
+            <p>Live signed execution, more DeFi actions, and public beta users.</p>
+          </div>
+          <div class="team">
+            <img src="../frontend/public/Ratzon_logo-removebg-preview.png" alt="Ratzon logo" />
+            <p><strong>Built by Eric, solo engineer.</strong><br />Parser, Jupiter integration, risk engine and Telegram flow shipped in under one week.</p>
+          </div>
+        </div>
+      </div>
+      <div class="bottom-line">Try it now: <span class="red">@Ratzon_bot</span></div>
+    </div>
+    <div class="footer">
+      <span>Superteam Georgia · Colosseum Frontier Hackathon</span>
+      <strong>07</strong>
+    </div>
+  </section>
+</body>
+</html>
